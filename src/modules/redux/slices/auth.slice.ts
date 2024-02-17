@@ -1,4 +1,7 @@
-import { PrepareAction, createAction, createSlice } from '@reduxjs/toolkit'
+import { API_ENDPOINTS } from '@/constants'
+import { ISignUpRequest } from '@/interfaces'
+import { Post } from '@/modules/fetch'
+import { PrepareAction, createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { persistAccessToken } from '../storages/auth.storage'
 
 export interface AuthState {
@@ -19,6 +22,11 @@ export const doSetAccessToken = createAction<PrepareAction<string>>(
     }
 )
 
+export const requestSignUp = createAsyncThunk(
+    'auth/requestSignUp',
+    async (payload: ISignUpRequest, { dispatch }) =>
+        Post(API_ENDPOINTS.AUTH.SIGN_UP, payload)
+)
 
 const authSlice = createSlice({
     name: 'auth',

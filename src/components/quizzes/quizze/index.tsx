@@ -162,15 +162,21 @@ const Quiz = ({ quiz }: IProps) => {
     <div className="container">
       <Progress
         className="m3-2"
-        title={<h1 className="text-3xl font-bold mb-4">{quiz.title}</h1>}
+        title={
+          <h1 className="text-3xl font-bold mb-4 text-quiz-secondary">
+            {quiz.title}
+          </h1>
+        }
         step={currentQuestionIndex + 1}
         totalStep={quiz.questions?.length ?? 0}
         key={1}
       />
-      <p className="text-gray-600 mb-6">{quiz.description}</p>
+      <p className="mb-6 text-quiz-primary">{quiz.description}</p>
       <div className="bg-white p-6 rounded-md shadow-md">
         <div className="flex items-center">
-          <h2 className="text-xl font-bold mb-2">{currentQuestion?.code}</h2>
+          <h2 className="text-xl font-bold mb-2 text-quiz-primary">
+            {currentQuestion?.code}
+          </h2>
           <svg
             aria-placeholder="hint"
             xmlns="http://www.w3.org/2000/svg"
@@ -184,16 +190,18 @@ const Quiz = ({ quiz }: IProps) => {
             strokeLinecap="round"
             strokeLinejoin="round"
             data-tooltip-id="hint-tooltip"
-            data-tooltip-content={currentQuestion?.hint}
+            // data-tooltip-content={currentQuestion?.hint}
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
             <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
             <path d="M12 9h.01"></path>
             <path d="M11 12h1v4h1"></path>
           </svg>
-          <Tooltip id="hint-tooltip" />
+          <Tooltip id="hint-tooltip" style={{ maxWidth: "50%" }}>
+            <p className="text-balance">{currentQuestion?.hint}</p>
+          </Tooltip>
         </div>
-        <p className="mb-4">{currentQuestion?.text}</p>
+        <p className="mb-4 text-quiz-primary">{currentQuestion?.text}</p>
         <div className="grid grid-cols-2 gap-2">
           {currentQuestion?.options?.map((option, index) => (
             <div key={index} className="mb-2">
@@ -212,10 +220,10 @@ const Quiz = ({ quiz }: IProps) => {
                 htmlFor={`option_${currentQuestion.code}_${option.code}`}
                 className={`ml-2 ${
                   option.id === optionMatch?.id
-                    ? "text-green-600 font-semibold"
+                    ? "text-quiz-pass font-semibold"
                     : option.id === selectedOptions[currentQuestion.id]
-                    ? "text-red-600 font-semibold"
-                    : ""
+                    ? "text-quiz-fail font-semibold"
+                    : "text-quiz-primary"
                 }`}
               >
                 {option.text}

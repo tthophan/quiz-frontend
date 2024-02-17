@@ -6,4 +6,8 @@ export const API_ENDPOINTS = {
         DETAIL: '/api/v1/quizzes/:code',
         ANSWER_QUESTION: '/api/v1/quizzes/answer-question',
     },
+    AUTH: {
+        SIGN_UP: '/api/v1/auth/sign-up',
+        SIGN_IN: '/api/v1/auth/sign-in',
+    }
 }

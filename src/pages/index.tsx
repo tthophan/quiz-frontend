@@ -1,8 +1,8 @@
-import Quizzes from "@/components/quizzes";
-import { signOut, useSession } from "next-auth/react";
+import Introduce from "@/components/introduce";
+import { useSession } from "next-auth/react";
 import { Inter } from "next/font/google";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,17 +10,19 @@ export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (status === "unauthenticated") router.push(`/auth/sign-in`);
-  }, [status]);
-
-  if (session)
-    return (
-      <>
-      Signed in as {session.user?.name} <br />
-      <button onClick={() => signOut()}>Sign out</button>
-
-      </>
-    );
-  return <>ok</>;
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-600">
+      <Head>
+        <title>Vani Coins Quiz</title>
+        <meta
+          name="description"
+          content="Take the quiz of Vani Coins and get instantly 10000 coins."
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className="flex flex-col bg-gradient-radial items-center justify-center w-full flex-1 px-4 text-center">
+        <Introduce />
+      </main>
+    </div>
+  );
 }

@@ -13,6 +13,17 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      backgroundColor: {
+        'vani': '#5149B3',
+      },
+      colors: {
+        quiz: {
+          primary: '#000000',
+          secondary: '#ffffff',
+          pass: '#00FF00',
+          fail: '#FF5F49'
+        }
+      }
     },
   },
   plugins: [],

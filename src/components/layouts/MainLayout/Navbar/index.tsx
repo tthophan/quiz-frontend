@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
           <div className="relative" ref={dropdownRef}>
             <button onClick={toggleDropdown} className="flex items-center">
               <img
-                src={session.user?.image || "/default-avatar.jpg"} // Use a default avatar image if user image is not available
+                src={session.user?.image || "/images/default-avatar.png"} // Use a default avatar image if user image is not available
                 alt="Avatar"
                 className="w-8 h-8 rounded-full mr-2"
               />
@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
               <div className="absolute z-10 right-0 mt-2 bg-white rounded-md shadow-md">
                 <div className="p-4">
                   <img
-                    src={session.user?.image || "/default-avatar.jpg"}
+                    src={session.user?.image || "/images/default-avatar.png"}
                     alt="Avatar"
                     className="w-16 h-16 rounded-full mb-2"
                   />
@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
             )}
           </div>
         ) : (
-          <Link href="/login">Login</Link>
+          <Link href="/auth/sign-in">Sign In</Link>
         )}
       </div>
     </nav>

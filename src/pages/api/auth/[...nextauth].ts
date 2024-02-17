@@ -1,8 +1,12 @@
 
 //import LineProvider from "next-auth/providers/line";
-import { CONFIGURATION } from "@/constants";
+import { API_ENDPOINTS, CONFIGURATION } from "@/constants";
+import axios from "axios";
 import NextAuth from "next-auth/next";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+
+
 
 
 async function refreshAccessToken(token: any) {
@@ -59,6 +63,23 @@ export default NextAuth({
                 }
             }
         }),
+        CredentialsProvider({
+            id: "credentials-sign-in",
+            name: 'Credentials',
+            credentials: {
+                phone: {},
+                password: {},
+            },
+            async authorize(credentials) {
+                const url = `${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.AUTH.SIGN_IN}`;
+                const { data } = await axios.post(url, credentials).catch((error: any) => {
+                    console.log(error, "err", credentials)
+                    throw error
+                });
+                return data.data;
+            }
+        }),
+
     ],
     secret: CONFIGURATION.AUTH_PROVIDERS.JWT_SECRET,
     pages: {
@@ -66,9 +87,11 @@ export default NextAuth({
         error: "/auth/sign-up",
     },
     callbacks: {
-        async signIn({ account, credentials }: any) {
-            const providerName: any = ['googleAuth2'];
-            if (account && providerName.includes(account?.provider)) {
+        async signIn({ account }: any) {
+            if (account && account.provider === 'googleAuth2') {
+                return true
+            }
+            else if (account && account.provider === 'credentials-sign-in') {
                 return true
             }
             return false
@@ -77,32 +100,33 @@ export default NextAuth({
             return url;
         },
         async jwt({ token, user, account }) {
-            // Initial sign in
-            if (account && user) {
+            if (account && (account as any).provider === 'credentials-sign-in') {
                 return {
-                    accessToken: account.accessToken,
-                    accessTokenExpires: Date.now() + (account as any).expires_in * 1000,
-                    refreshToken: account.refresh_token,
-                    user,
+                    accessToken: (user as any).jwt,
+                    user: (user as any).userInfo
                 }
             }
 
-            // Return previous token if the access token has not expired yet
-            if (Date.now() < (token as any).accessTokenExpires) {
-                return token
+            // Initial sign in
+            if (account && user) {
+                console.log(account)
+                return {
+                    accessToken: account.access_token ?? (user as any)?.jwt,
+                    accessTokenExpires: (account as any).expires_in ? Date.now() + (account as any).expires_in * 1000
+                        : (token as any)?.user?.jwt,
+                    refreshToken: account.refresh_token,
+                    user: user ?? (token as any).user.userInfo,
+                }
             }
-
-            // Access token has expired, try to update it
-            return refreshAccessToken(token)
+            return token
         },
         session: async ({ session, token }: { session: any, token: any }) => {
             if (token) {
-                session.maxAge = 60 * 60;
+                session.maxAge = 60 * 60 * 24;
                 session.user = token.user
                 session.accessToken = token.accessToken
                 session.error = token.error
             }
-
             return session
         },
 

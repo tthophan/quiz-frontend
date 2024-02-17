@@ -14,20 +14,25 @@ config.autoAddCss = false;
 
 function QuizApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const isAuthPage = router.pathname.toString().includes("auth"); // Check if the page is under '/auth/'
+  const path = router.pathname.toString();
+  const isGlobal = path.includes("auth") || path === "/";
+
+  // Check if the page is under '/auth/'
   return (
     <SessionProvider session={pageProps.session}>
       <Providers>
-        <AppRegistry>
+        <>
           <ToastContainer />
-          {isAuthPage ? (
-            <Component {...pageProps} />
-          ) : (
-            <MainLayout>
+          <AppRegistry>
+            {isGlobal ? (
               <Component {...pageProps} />
-            </MainLayout>
-          )}
-        </AppRegistry>
+            ) : (
+              <MainLayout>
+                <Component {...pageProps} />
+              </MainLayout>
+            )}
+          </AppRegistry>
+        </>
       </Providers>
     </SessionProvider>
   );

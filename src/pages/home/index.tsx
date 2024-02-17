@@ -40,9 +40,11 @@ const HomePage = () => {
               Answered
             </div>
           )}
-          <h2 className="text-xl font-bold mb-2">{quiz.title}</h2>
-          <p className="text-gray-600">{quiz.shortDescription}</p>
-          <p className="text-gray-600">Questions: {quiz.totalQuestions}</p>
+          <h2 className="text-xl text-quiz-primary font-bold mb-2">
+            {quiz.title}
+          </h2>
+          <p className="text-quiz-primary">{quiz.shortDescription}</p>
+          <p className="text-quiz-primary">Questions: {quiz.totalQuestions}</p>
           <p className="text-blue-500">Start Quiz</p>
         </div>
       </Link>
