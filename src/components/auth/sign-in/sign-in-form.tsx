@@ -49,7 +49,6 @@ const SignInForm = () => {
 
   const onSubmit = async (e: any) => {
     if (validateForm()) {
-      console.log("Form submitted:", formData);
       e.preventDefault();
       await signIn("credentials-sign-in", {
         redirect: false,

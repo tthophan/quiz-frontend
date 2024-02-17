@@ -21,7 +21,10 @@ const SummaryQuizComponent = () => {
               {question?.options?.map((option) => (
                 <div key={option.code} className="mb-2">
                   <input
-                    type="radio"
+                    // type="radio"
+                    type={
+                      question.maxOptionCanSelected > 1 ? "checkbox" : "radio"
+                    }
                     name={question.code}
                     disabled
                     id={`option_${question.code}_${option.code}`}

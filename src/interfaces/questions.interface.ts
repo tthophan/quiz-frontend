@@ -5,5 +5,6 @@ export interface IQuestion {
     code: string
     text: string
     hint: string
+    maxOptionCanSelected: number
     options: Array<IOption>
 }

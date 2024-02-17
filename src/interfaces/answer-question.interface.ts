@@ -3,7 +3,7 @@ export interface IAnswerQuestion {
 
     questionId: number
 
-    optionId: number
+    optionIds: Array<number>
 }
 
 

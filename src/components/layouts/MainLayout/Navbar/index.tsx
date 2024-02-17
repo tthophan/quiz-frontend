@@ -54,12 +54,12 @@ const Navbar: React.FC = () => {
                     alt="Avatar"
                     className="w-16 h-16 rounded-full mb-2"
                   />
-                  <p className="text-gray-800">{session.user?.name}</p>
-                  <p className="text-gray-800">{session.user?.email}</p>
+                  <p className="text-quiz-primary">{session.user?.name}</p>
+                  <p className="text-quiz-primary">{session.user?.email}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                  className="block w-full px-4 py-2 text-quiz-primary hover:bg-gray-200 rounded-md"
                 >
                   Logout
                 </button>

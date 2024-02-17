@@ -18,13 +18,13 @@ const Quiz = ({ quiz }: IProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [selectedOptions, setSelectedOptions] = useState<{
-    [key: number]: number;
+    [key: number]: Array<number>;
   }>({});
   const [questionResult, setQuestionResult] = useState<IQuestion>();
   const [currentQuizResult, setCurrentQuizResult] = useState<IQuiz>();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState<IQuestion>();
-  const [optionMatch, setOptionMatch] = useState<IOption>();
+  const [optionMatch, setOptionMatch] = useState<Array<IOption>>();
   useEffect(() => {
     setCurrentQuizResult(quiz);
   }, [quiz]);
@@ -68,52 +68,69 @@ const Quiz = ({ quiz }: IProps) => {
     router.push(`./${quiz.code}/summary`);
   };
 
-  const handleOptionChange = async (questionId: number, option: IOption) => {
+  const handleOptionChange = async (
+    questionId: number,
+    option: IOption,
+    maxOptionCanSelected: number
+  ) => {
     const { id: optionId } = option;
 
     setSelectedOptions((prevSelectedOptions) => ({
       ...prevSelectedOptions,
-      [questionId]: optionId,
+      [questionId]: Array.from(
+        new Set([...(prevSelectedOptions[questionId] ?? []), optionId])
+      ),
     }));
-
+    if ((selectedOptions[questionId]?.length ?? 0) < maxOptionCanSelected - 1) {
+      return;
+    }
     const response = await dispatch(
       answerQuestion({
-        optionId,
+        optionIds: [...(selectedOptions[questionId] ?? []), optionId],
         questionId,
         quizId: quiz.id,
       })
     ).unwrap();
+    setOptionMatch(response.details);
 
-    setOptionMatch(response.detail);
-    const newData = response.result
-      ? [
-          {
-            ...response.detail,
-            selected: true,
-            match: true,
-          },
-        ]
-      : [
-          {
-            ...option,
-            selected: true,
-            match: false,
-          },
-          {
-            ...response.detail,
-            selected: false,
-            match: true,
-          },
-        ];
-
+    let newData: Array<IOption> = [];
+    if (response.result) {
+      newData = response.details.map((optionMatch: IOption) => ({
+        ...optionMatch,
+        selected: true,
+        match: true,
+      }));
+    } else {
+      response.details.forEach((optionMatch: IOption) => {
+        newData.push({
+          ...optionMatch,
+          selected: [...(selectedOptions[questionId] ?? []), optionId].includes(
+            optionMatch.id
+          ),
+          match: true,
+        });
+      });
+      newData = [
+        ...newData,
+        ...currentQuestion!
+          .options!.filter((x) => !newData.some((a) => a.id === x.id))
+          .map((u) => ({
+            ...u,
+            selected: [
+              ...(selectedOptions[questionId] ?? []),
+              optionId,
+            ].includes(u.id),
+          })),
+      ];
+    }
     setQuestionResult({
       ...currentQuestion!,
       options: [
         ...currentQuestion!.options!.filter(
-          (x) => ![option.id, response.detail.id].includes(x.id)
+          (x) => !newData.map(({ id }: IOption) => id).includes(x.id)
         ),
         ...newData,
-      ],
+      ].sort((a, b) => a.id - b.id),
     });
   };
 
@@ -180,7 +197,7 @@ const Quiz = ({ quiz }: IProps) => {
           <svg
             aria-placeholder="hint"
             xmlns="http://www.w3.org/2000/svg"
-            className="ml-2 shrink-0 w-6 h-6 text-gray-500"
+            className="ml-2 shrink-0 w-6 h-6 pb-2 text-quiz-primary"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -201,27 +218,48 @@ const Quiz = ({ quiz }: IProps) => {
             <p className="text-balance">{currentQuestion?.hint}</p>
           </Tooltip>
         </div>
-        <p className="mb-4 text-quiz-primary">{currentQuestion?.text}</p>
+        <p className="mb-4 text-quiz-primary">
+          {currentQuestion?.text}
+          {currentQuestion?.maxOptionCanSelected !== 1 && (
+            <strong>
+              (Please choose {currentQuestion?.maxOptionCanSelected} answers!)
+            </strong>
+          )}
+        </p>
         <div className="grid grid-cols-2 gap-2">
           {currentQuestion?.options?.map((option, index) => (
             <div key={index} className="mb-2">
               <input
-                disabled={!!selectedOptions[currentQuestion.id]}
+                disabled={
+                  (selectedOptions[currentQuestion.id]?.length ?? 0) >=
+                  currentQuestion.maxOptionCanSelected
+                }
                 // type="checkbox"
                 name={currentQuestion.code}
-                type="radio"
+                type={
+                  currentQuestion.maxOptionCanSelected > 1
+                    ? "checkbox"
+                    : "radio"
+                }
                 id={`option_${currentQuestion.code}_${option.code}`}
-                onChange={() => handleOptionChange(currentQuestion.id, option)}
+                onChange={() =>
+                  handleOptionChange(
+                    currentQuestion.id,
+                    option,
+                    currentQuestion.maxOptionCanSelected
+                  )
+                }
                 checked={
-                  selectedOptions[currentQuestion.id] === option.id || false
+                  selectedOptions[currentQuestion.id]?.includes(option.id) ||
+                  false
                 }
               />
               <label
                 htmlFor={`option_${currentQuestion.code}_${option.code}`}
                 className={`ml-2 ${
-                  option.id === optionMatch?.id
+                  optionMatch?.some((x) => x.id === option.id)
                     ? "text-quiz-pass font-semibold"
-                    : option.id === selectedOptions[currentQuestion.id]
+                    : selectedOptions[currentQuestion.id]?.includes(option.id)
                     ? "text-quiz-fail font-semibold"
                     : "text-quiz-primary"
                 }`}

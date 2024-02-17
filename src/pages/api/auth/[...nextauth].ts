@@ -39,7 +39,6 @@ async function refreshAccessToken(token: any) {
             refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
         }
     } catch (error) {
-        console.log(error)
         return {
             ...token,
             error: "RefreshAccessTokenError",
@@ -73,7 +72,6 @@ export default NextAuth({
             async authorize(credentials) {
                 const url = `${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.AUTH.SIGN_IN}`;
                 const { data } = await axios.post(url, credentials).catch((error: any) => {
-                    console.log(error, "err", credentials)
                     throw error
                 });
                 return data.data;
@@ -109,7 +107,6 @@ export default NextAuth({
 
             // Initial sign in
             if (account && user) {
-                console.log(account)
                 return {
                     accessToken: account.access_token ?? (user as any)?.jwt,
                     accessTokenExpires: (account as any).expires_in ? Date.now() + (account as any).expires_in * 1000
