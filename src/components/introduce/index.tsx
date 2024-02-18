@@ -1,5 +1,9 @@
+import { notificationController } from "@/controllers/notification.controller";
 import { useAppDispatch } from "@/modules/redux";
-import { fetchVaniQuiz } from "@/modules/redux/slices/app.slice";
+import {
+  checkVaniQuizAnswered,
+  doStartQuiz,
+} from "@/modules/redux/slices/app.slice";
 import { doSetAccessToken } from "@/modules/redux/slices/auth.slice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -16,12 +20,16 @@ const Introduce: React.FC = () => {
 
   const handleStartQuiz = async (e: any) => {
     if (status === "unauthenticated") return router.push(`/auth/sign-in`);
-    await dispatch(fetchVaniQuiz())
-      .unwrap()
-      .catch((ex) => {
-        e.preventDefault();
-        throw ex;
+    const result = await dispatch(checkVaniQuizAnswered()).unwrap();
+
+    if (result) {
+      e.preventDefault();
+      notificationController.info({
+        message: "Quiz has been answered by you before.",
       });
+      return;
+    }
+    await dispatch(doStartQuiz()).unwrap();
     router.push(`/quiz-answer`);
   };
   return (

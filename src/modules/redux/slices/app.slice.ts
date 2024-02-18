@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from '@/constants'
-import { IAnswerQuestion, IQuiz, IQuizAnswer } from '@/interfaces'
+import { IAnswerQuestion, IQuestion, IQuiz, IQuizAnswer } from '@/interfaces'
 import { Get, Post } from '@/modules/fetch'
 import { PrepareAction, createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
@@ -9,6 +9,7 @@ export interface AppState {
     quiz?: IQuiz
     vaniQuiz?: IQuiz
     quizResult?: IQuiz
+    currentQuestion?: IQuestion
 }
 
 export interface QuizList {
@@ -19,7 +20,8 @@ const initialState: AppState = {
     isSidebarOpen: true,
     quizzes: [],
     quiz: undefined,
-    quizResult: undefined
+    quizResult: undefined,
+    currentQuestion: undefined
 }
 
 export const doSetSidebarOpen = createAction<PrepareAction<boolean>>(
@@ -39,6 +41,27 @@ export const setQuizList = createAction<PrepareAction<QuizList>>(
         }
     }
 )
+
+export const setCurrentQuestion = createAction<PrepareAction<IQuestion>>(
+    'app/setCurrentQuestion',
+    (state: IQuestion) => {
+        return {
+            payload: state
+        }
+    }
+)
+
+export const doStartQuiz = createAsyncThunk(
+    'auth/signOut',
+    async (_: void, { dispatch }) => {
+        dispatch(setQuizList(null))
+        dispatch(setQuiz(null))
+        dispatch(setVaniQuiz(null))
+        dispatch(setQuizResult(null))
+        dispatch(setCurrentQuestion(null))
+    }
+)
+
 export const setQuiz = createAction<PrepareAction<IQuiz>>(
     'app/setQuiz',
     (state: IQuiz) => {
@@ -84,6 +107,11 @@ export const submitQuiz: any = createAsyncThunk(
     async (payload: IQuizAnswer, { dispatch }) => await Post(API_ENDPOINTS.QUIZZES.SUBMIT_QUIZ, payload, { skipHandleError: false })
 )
 
+export const checkVaniQuizAnswered: any = createAsyncThunk(
+    'app/checkVaniQuizAnswered',
+    async (_, { dispatch }) => await Get(API_ENDPOINTS.QUIZZES.CHECK_QUIZ_ANSWERED, { skipHandleError: false })
+)
+
 export const answerQuestion: any = createAsyncThunk(
     'app/answerQuestion',
     async (payload: IAnswerQuestion, { dispatch }) => await Post(API_ENDPOINTS.QUIZZES.ANSWER_QUESTION, payload, { skipHandleError: false })
@@ -122,7 +150,7 @@ const appSlice = createSlice({
             state.isSidebarOpen = action.payload
         })
         builder.addCase(setQuizList, (state, action) => {
-            state.quizzes = action.payload.items
+            state.quizzes = action.payload?.items
         })
         builder.addCase(setQuiz, (state, action) => {
             state.quiz = action.payload
@@ -132,6 +160,9 @@ const appSlice = createSlice({
         })
         builder.addCase(setQuizResult, (state, action) => {
             state.quizResult = action.payload
+        })
+        builder.addCase(setCurrentQuestion, (state, action) => {
+            state.currentQuestion = action.payload
         })
     }
 })

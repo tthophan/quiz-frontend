@@ -1,10 +1,11 @@
 "use client";
+import { notificationController } from "@/controllers/notification.controller";
 import { useAppDispatch } from "@/modules/redux";
 import { requestSignUp } from "@/modules/redux/slices/auth.slice";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import SocialSignIn from "../sign-in/social-sign-in";
-import { Router, useRouter } from "next/router";
-import { notificationController } from "@/controllers/notification.controller";
 const SignUpForm = () => {
   // Vietnamese and Korean phone number regex
   const vietnamesePhoneRegex = /^(0[1-9][0-9]{8}|84[1-9][0-9]{7})$/;
@@ -63,11 +64,16 @@ const SignUpForm = () => {
         })
       )
         .unwrap()
-        .then(() => {
+        .then(async () => {
           notificationController.success({
             message: "Create account successful",
           });
-          router.push("/auth/sign-in");
+          await signIn("credentials-sign-in", {
+            redirect: false,
+            phone: formData.phone,
+            password: formData.password,
+          });
+          router.push("/");
         });
     }
   };

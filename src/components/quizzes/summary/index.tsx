@@ -1,9 +1,14 @@
 import { useAppSelector } from "@/modules/redux";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const SummaryQuizComponent = () => {
+  const router = useRouter();
   const quiz = useAppSelector(({ app }) => app.quizResult);
-
+  useEffect(() => {
+    if (!quiz) router.push("/");
+  }, []);
   return (
     <div className="container">
       <h1 className="text-3xl font-bold mb-4">Quiz Summary</h1>
