@@ -11,7 +11,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-600">
+    <div className="flex flex-col items-center justify-center min-m-screen py-2">
       <Head>
         <title>Vani Coins Quiz</title>
         <meta
@@ -20,7 +20,7 @@ export default function Home() {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex flex-col bg-gradient-radial items-center justify-center w-full flex-1 px-4 text-center">
+      <main className="flex flex-col items-center justify-center w-full flex-1 px-4 text-center">
         <Introduce />
       </main>
     </div>

@@ -15,7 +15,7 @@ config.autoAddCss = false;
 function QuizApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const path = router.pathname.toString();
-  const isGlobal = path.includes("auth") || path === "/";
+  const isGlobal = path.includes("auth") //|| path === "/";
 
   // Check if the page is under '/auth/'
   return (

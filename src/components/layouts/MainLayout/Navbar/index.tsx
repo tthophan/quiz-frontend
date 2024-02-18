@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="bg-gray-800 text-white p-4">
       <div className="flex justify-between">
-        <Link legacyBehavior href="/home">
+        <Link legacyBehavior href="/">
           Quiz App
         </Link>
         {session ? (

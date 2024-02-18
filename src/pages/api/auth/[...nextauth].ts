@@ -73,8 +73,7 @@ export default NextAuth({
                 password: {},
             },
             async authorize(credentials) {
-                const { data } = await Post<{ data: IAuthResponse }>(API_ENDPOINTS.AUTH.SIGN_IN, credentials, { skipHandleError: false })
-                return data.data as any;
+             return await Post(API_ENDPOINTS.AUTH.SIGN_IN, credentials, { skipHandleError: false }) as any
             }
         }),
 
@@ -98,7 +97,6 @@ export default NextAuth({
             return url;
         },
         async jwt({ token, user, account }) {
-            console.log("token", token)
             if (account && (account as any).provider === 'credentials-sign-in') {
                 return {
                     accessToken: (user as any).jwt,

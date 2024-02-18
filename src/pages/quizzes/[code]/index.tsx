@@ -1,4 +1,4 @@
-import Quiz from "@/components/quizzes/quizze";
+import Quiz from "@/components/quizzes/quiz";
 import { useAppDispatch, useAppSelector } from "@/modules/redux";
 import { fetchQuiz } from "@/modules/redux/slices/app.slice";
 import { useRouter } from "next/router";

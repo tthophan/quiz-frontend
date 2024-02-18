@@ -9,7 +9,7 @@ const SignInPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") router.push(`/home`);
+    if (status === "authenticated") router.push(`/`);
   }, [session, status]);
 
   useEffect(() => {

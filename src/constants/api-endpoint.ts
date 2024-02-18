@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
         LIST: '/api/v1/quizzes',
         SUBMIT_QUIZ: '/api/v1/quizzes',
         DETAIL: '/api/v1/quizzes/:code',
+        VANI: '/api/v1/quizzes/vani-quiz/detail',
         ANSWER_QUESTION: '/api/v1/quizzes/answer-question',
     },
     AUTH: {

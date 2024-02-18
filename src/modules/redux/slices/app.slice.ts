@@ -7,6 +7,7 @@ export interface AppState {
     isSidebarOpen: boolean
     quizzes: Array<IQuiz>
     quiz?: IQuiz
+    vaniQuiz?: IQuiz
     quizResult?: IQuiz
 }
 
@@ -40,6 +41,15 @@ export const setQuizList = createAction<PrepareAction<QuizList>>(
 )
 export const setQuiz = createAction<PrepareAction<IQuiz>>(
     'app/setQuiz',
+    (state: IQuiz) => {
+        return {
+            payload: state
+        }
+    }
+)
+
+export const setVaniQuiz = createAction<PrepareAction<IQuiz>>(
+    'app/setVaniQuiz',
     (state: IQuiz) => {
         return {
             payload: state
@@ -91,6 +101,18 @@ export const fetchQuiz = createAsyncThunk(
     }
 )
 
+export const fetchVaniQuiz = createAsyncThunk(
+    'app/fetchVaniQuiz',
+    async (_, { dispatch }) => {
+        return Get(API_ENDPOINTS.QUIZZES.VANI, { skipHandleError: false }).then(
+            (res: any) => {
+                dispatch(setVaniQuiz(res))
+                return res
+            }
+        )
+    }
+)
+
 const appSlice = createSlice({
     name: 'app',
     initialState,
@@ -104,6 +126,9 @@ const appSlice = createSlice({
         })
         builder.addCase(setQuiz, (state, action) => {
             state.quiz = action.payload
+        })
+        builder.addCase(setVaniQuiz, (state, action) => {
+            state.vaniQuiz = action.payload
         })
         builder.addCase(setQuizResult, (state, action) => {
             state.quizResult = action.payload
