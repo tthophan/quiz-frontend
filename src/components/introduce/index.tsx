@@ -1,12 +1,19 @@
 import { useAppDispatch } from "@/modules/redux";
 import { fetchVaniQuiz } from "@/modules/redux/slices/app.slice";
+import { doSetAccessToken } from "@/modules/redux/slices/auth.slice";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const Introduce: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { status, data: session } = useSession();
+
+  useEffect(() => {
+    if (session) dispatch(doSetAccessToken((session as any)["accessToken"]));
+  }, [session]);
+
   const handleStartQuiz = async (e: any) => {
     if (status === "unauthenticated") return router.push(`/auth/sign-in`);
     await dispatch(fetchVaniQuiz())

@@ -231,7 +231,13 @@ const Quiz = ({ quiz }: IProps) => {
               />
               <label
                 htmlFor={`option_${currentQuestion.code}_${option.code}`}
-                className={`ml-2 text-quiz-primary`}
+                className={`ml-2 ${
+                  (selectedOptions[currentQuestion!.id] ?? []).includes(
+                    option.id
+                  )
+                    ? "text-quiz-pass"
+                    : "text-quiz-primary"
+                }`}
               >
                 {option.text}
               </label>

@@ -33,10 +33,8 @@ const SummaryQuizComponent = () => {
                   <label
                     htmlFor={`option_${question.code}_${option.code}`}
                     className={`ml-2 ${
-                      option.match
+                      option.selected
                         ? "text-quiz-pass font-semibold"
-                        : option.selected && !option.match
-                        ? "text-quiz-fail font-semibold"
                         : "text-quiz-primary"
                     }`}
                   >
