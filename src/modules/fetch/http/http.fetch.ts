@@ -50,11 +50,11 @@ export const Get = async (
 ): Promise<AxiosResponse<object>> =>
     fetchRequest(instance => instance.get(url), options)
 
-export const Post = async (
+export const Post = async <T = Object>(
     url: string,
     payload?: object,
     options?: FetchOptions
-): Promise<AxiosResponse<object>> =>
+): Promise<AxiosResponse<T>> =>
     fetchRequest(instance => instance.post(url, payload), options)
 
 export const Put = async (

@@ -1,6 +1,9 @@
 
 //import LineProvider from "next-auth/providers/line";
 import { API_ENDPOINTS, CONFIGURATION } from "@/constants";
+import { notificationController } from "@/controllers/notification.controller";
+import { IAuthResponse } from "@/interfaces";
+import { Post } from "@/modules/fetch";
 import axios from "axios";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -70,11 +73,8 @@ export default NextAuth({
                 password: {},
             },
             async authorize(credentials) {
-                const url = `${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.AUTH.SIGN_IN}`;
-                const { data } = await axios.post(url, credentials).catch((error: any) => {
-                    throw error
-                });
-                return data.data;
+                const { data } = await Post<{ data: IAuthResponse }>(API_ENDPOINTS.AUTH.SIGN_IN, credentials, { skipHandleError: false })
+                return data.data as any;
             }
         }),
 
@@ -98,6 +98,7 @@ export default NextAuth({
             return url;
         },
         async jwt({ token, user, account }) {
+            console.log("token", token)
             if (account && (account as any).provider === 'credentials-sign-in') {
                 return {
                     accessToken: (user as any).jwt,

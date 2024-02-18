@@ -1,8 +1,11 @@
 "use client";
+import { notificationController } from "@/controllers/notification.controller";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import SocialSignIn from "./social-sign-in";
 const SignInForm = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     phone: "",
     password: "",
@@ -50,11 +53,15 @@ const SignInForm = () => {
   const onSubmit = async (e: any) => {
     if (validateForm()) {
       e.preventDefault();
-      await signIn("credentials-sign-in", {
+      const result = await signIn("credentials-sign-in", {
         redirect: false,
         phone: formData.phone,
         password: formData.password,
       });
+      if (result?.error)
+        notificationController.error({
+          message: result.error,
+        });
     }
   };
   return (
@@ -121,6 +128,15 @@ const SignInForm = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
         >
           Sign in
+        </button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            router.push("/auth/sign-up");
+          }}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 mt-5 px-4 w-full"
+        >
+          Sign up
         </button>
       </form>
       <SocialSignIn />

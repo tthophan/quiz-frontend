@@ -4,6 +4,7 @@ import { requestSignUp } from "@/modules/redux/slices/auth.slice";
 import { useState } from "react";
 import SocialSignIn from "../sign-in/social-sign-in";
 import { Router, useRouter } from "next/router";
+import { notificationController } from "@/controllers/notification.controller";
 const SignUpForm = () => {
   // Vietnamese and Korean phone number regex
   const vietnamesePhoneRegex = /^(0[1-9][0-9]{8}|84[1-9][0-9]{7})$/;
@@ -63,7 +64,10 @@ const SignUpForm = () => {
       )
         .unwrap()
         .then(() => {
-          router.push("/auth/sign-up");
+          notificationController.success({
+            message: "Create account successful",
+          });
+          router.push("/auth/sign-in");
         });
     }
   };
