@@ -26,7 +26,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
-
+COPY ./public ./public
 ################################################################################
 # Create a stage for building the application.
 FROM deps as build
@@ -60,6 +60,7 @@ COPY package.json .
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
 COPY --from=deps /usr/src/app/node_modules ./node_modules
+COPY --from=deps /usr/src/app/public ./public
 COPY --from=build /usr/src/app/./.next ././.next
 
 
