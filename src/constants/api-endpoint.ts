@@ -1,5 +1,5 @@
 export const API_ENDPOINTS = {
-    BASE_URL: process.env.NEXT_PUBLIC_API_BACKEND_URL,
+    BASE_URL: 'https://quiz-backend-bmra.onrender.com',//process.env.NEXT_PUBLIC_API_BACKEND_URL,
     QUIZZES: {
         LIST: '/api/v1/quizzes',
         SUBMIT_QUIZ: '/api/v1/quizzes',
