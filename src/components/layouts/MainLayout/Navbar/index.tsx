@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 const Navbar: React.FC = () => {
-  const dropdownRef = useRef<HTMLDivElement>();
+  const dropdownRef = useRef<any>();
   const { data: session } = useSession();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
