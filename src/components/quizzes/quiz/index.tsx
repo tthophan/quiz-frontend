@@ -236,7 +236,7 @@ const Quiz = ({ quiz }: IProps) => {
             {quiz?.title}
           </h1>
         }
-        step={currentQuestionIndex + 1}
+        step={Math.min(quiz?.questions?.length ?? 0, currentQuestionIndex + 1)}
         totalStep={quiz?.questions?.length ?? 0}
         key={1}
       />
